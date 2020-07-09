@@ -46,7 +46,10 @@ class Traceback {
     public:
         Traceback(PotentialCalculator* p_calc) : p_calc_(p_calc) {}
 
+        // 抽象基类 Abstruct base class 
+	// 纯虚函数 =0，只能被继承，不能定义
         virtual bool getPath(float* potential, double start_x, double start_y, double end_x, double end_y, std::vector<std::pair<float, float> >& path) = 0;
+        // 虚函数，其他继承改类b的类可以重新定义setSize，并且在b->setSize调用时生效，和动态联排有关。
         virtual void setSize(int xs, int ys) {
             xs_ = xs;
             ys_ = ys;

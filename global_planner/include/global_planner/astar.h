@@ -59,7 +59,7 @@ struct greater1 {
             return a.cost > b.cost;
         }
 };
-
+// 继承Expander，子类的构造函数也必须初始化父类构造函数
 class AStarExpansion : public Expander {
     public:
         AStarExpansion(PotentialCalculator* p_calc, int nx, int ny);

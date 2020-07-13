@@ -79,6 +79,7 @@ namespace base_local_planner {
 
       VelocityIterator& operator++(int){
         current_index++;
+        // 返回当前对象本身，如果没有&，则是当前对象副本
         return *this;
       }
 

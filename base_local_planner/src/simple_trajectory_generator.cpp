@@ -57,6 +57,8 @@ void SimpleTrajectoryGenerator::initialise(
 }
 
 
+// dwa 算法中
+// DWAPlanner::findBestPath 先调用此函数生成 轨迹生成器
 void SimpleTrajectoryGenerator::initialise(
     const Eigen::Vector3f& pos,
     const Eigen::Vector3f& vel,
@@ -118,6 +120,7 @@ void SimpleTrajectoryGenerator::initialise(
     VelocityIterator x_it(min_vel[0], max_vel[0], vsamples[0]);
     VelocityIterator y_it(min_vel[1], max_vel[1], vsamples[1]);
     VelocityIterator th_it(min_vel[2], max_vel[2], vsamples[2]);
+    // 类重写了操作符函数++
     for(; !x_it.isFinished(); x_it++) {
       vel_samp[0] = x_it.getVelocity();
       for(; !y_it.isFinished(); y_it++) {
@@ -127,6 +130,8 @@ void SimpleTrajectoryGenerator::initialise(
           //ROS_DEBUG("Sample %f, %f, %f", vel_samp[0], vel_samp[1], vel_samp[2]);
           sample_params_.push_back(vel_samp);
         }
+	// 这里reset()的目的是什么？
+        // current_index 从 0 开始遍历
         th_it.reset();
       }
       y_it.reset();
@@ -201,11 +206,13 @@ bool SimpleTrajectoryGenerator::generateTrajectory(
 
   int num_steps;
   if (discretize_by_time_) {
+    // sim_granularity_ ???
     num_steps = ceil(sim_time_ / sim_granularity_);
   } else {
     //compute the number of steps we must take along this trajectory to be "safe"
     double sim_time_distance = vmag * sim_time_; // the distance the robot would travel in sim_time if it did not change velocity
     double sim_time_angle = fabs(sample_target_vel[2]) * sim_time_; // the angle the robot would rotate in sim_time
+    // sim_granularity_ 这个参数是什么鬼？
     num_steps =
         ceil(std::max(sim_time_distance / sim_granularity_,
             sim_time_angle    / angular_sim_granularity_));
@@ -250,6 +257,8 @@ bool SimpleTrajectoryGenerator::generateTrajectory(
   return num_steps > 0; // true if trajectory has at least one point
 }
 
+// 利用公式计算新坐标
+// 详情见https://blog.csdn.net/heyijia0327/article/details/44983551
 Eigen::Vector3f SimpleTrajectoryGenerator::computeNewPositions(const Eigen::Vector3f& pos,
     const Eigen::Vector3f& vel, double dt) {
   Eigen::Vector3f new_pos = Eigen::Vector3f::Zero();

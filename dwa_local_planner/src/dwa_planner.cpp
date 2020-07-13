@@ -179,6 +179,7 @@ namespace dwa_local_planner {
     std::vector<base_local_planner::TrajectorySampleGenerator*> generator_list;
     generator_list.push_back(&generator_);
 
+    // 传入生成器和一组打分函数，生成一个对象
     scored_sampling_planner_ = base_local_planner::SimpleScoredSamplingPlanner(generator_list, critics);
 
     private_nh.param("cheat_factor", cheat_factor_, 1.0);
@@ -228,6 +229,7 @@ namespace dwa_local_planner {
         &limits,
         vsamples_);
     generator_.generateTrajectory(pos, vel, vel_samples, traj);
+    // scored_sampling_planner_ 在创建对象时候已经把generator和costfunction 传过去了
     double cost = scored_sampling_planner_.scoreTrajectory(traj, -1);
     //if the trajectory is a legal one... the check passes
     if(cost >= 0) {
@@ -319,6 +321,7 @@ namespace dwa_local_planner {
     result_traj_.cost_ = -7;
     // find best trajectory by sampling and scoring the samples
     std::vector<base_local_planner::Trajectory> all_explored;
+    // base_local_planner::SimpleScoredSamplingPlanner scored_sampling_planner_;
     scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
 
     if(publish_traj_pc_)

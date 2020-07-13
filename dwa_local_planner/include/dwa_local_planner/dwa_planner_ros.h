@@ -106,6 +106,7 @@ namespace dwa_local_planner {
        * @param orig_global_plan The plan to pass to the controller
        * @return True if the plan was updated successfully, false otherwise
        */
+      // 设置全局路径
       bool setPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan);
 
       /**
@@ -146,6 +147,7 @@ namespace dwa_local_planner {
       bool setup_;
       tf::Stamped<tf::Pose> current_pose_;
 
+      // 停止控制类
       base_local_planner::LatchedStopRotateController latchedStopRotateController_;
 
 

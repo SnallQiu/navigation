@@ -136,9 +136,11 @@ namespace dwa_local_planner {
       return false;
     }
     //when we get a new plan, we also want to clear any latch we may have on goal tolerances
+    // 复位latchedStopRotateController_中的锁存相关的标志位
     latchedStopRotateController_.resetLatching();
 
     ROS_INFO("Got new plan");
+    // 传到DWA_Planner
     return dp_->setPlan(orig_global_plan);
   }
 
@@ -152,6 +154,7 @@ namespace dwa_local_planner {
       return false;
     }
 
+    // base_local_planner::LatchedStopRotateController latchedStopRotateController_; 到达目标点后的停止旋转运动控制类
     if(latchedStopRotateController_.isGoalReached(&planner_util_, odom_helper_, current_pose_)) {
       ROS_INFO("Goal reached");
       return true;
@@ -215,6 +218,7 @@ namespace dwa_local_planner {
 
     //if we cannot move... tell someone
     std::vector<geometry_msgs::PoseStamped> local_plan;
+    // 得到的局部路径无效，返回false，引起move_base进一步处理
     if(path.cost_ < 0) {
       ROS_DEBUG_NAMED("dwa_local_planner",
           "The dwa local planner failed to find a valid plan, cost functions discarded all candidates. This can mean there is an obstacle too close to the robot.");

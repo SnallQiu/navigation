@@ -272,7 +272,7 @@ class AmclNode
     ros::Duration laser_check_interval_;
     void checkLaserReceived(const ros::TimerEvent& event);
 };
-
+// 这tm什么鬼？？？
 std::vector<std::pair<int,int> > AmclNode::free_space_indices;
 
 #define USAGE "USAGE: amcl"
@@ -966,7 +966,8 @@ AmclNode::~AmclNode()
   delete tf_;
   // TODO: delete everything allocated in constructor
 }
-
+// 没搞懂这函数在搞啥？？？·
+// 获取当前里程计位置
 bool
 AmclNode::getOdomPose(tf::Stamped<tf::Pose>& odom_pose,
                       double& x, double& y, double& yaw,
@@ -1067,6 +1068,7 @@ AmclNode::setMapCallback(nav_msgs::SetMap::Request& req,
   return true;
 }
 
+// 主要流程
 void
 AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
 {
@@ -1120,6 +1122,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
   }
 
   // Where was the robot when this scan was taken?
+  // 作为第五章里程计模型里的 ut，ut是里程计之前和现在的位姿，用来计算相对位移
   pf_vector_t pose;
   if(!getOdomPose(latest_odom_pose_, pose.v[0], pose.v[1], pose.v[2],
                   laser_scan->header.stamp, base_frame_id_))
@@ -1131,6 +1134,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
 
   pf_vector_t delta = pf_vector_zero();
 
+  // 确保之前有粒子 pf_odom_pose
   if(pf_init_)
   {
     // Compute change in pose
@@ -1183,6 +1187,8 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
     odata.delta = delta;
 
     // Use the action data to update the filter
+    // 对应第五章里程计模型采样更新粒子位置
+    // 为什么要传地址?
     odom_->UpdateAction(pf_, (AMCLSensorData*)&odata);
 
     // Pose at last filter update
@@ -1196,6 +1202,8 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
     AMCLLaserData ldata;
     ldata.sensor = lasers_[laser_index];
     ldata.range_count = laser_scan->ranges.size();
+    
+    // 这段还不知道在干嘛
 
     // To account for lasers that are mounted upside-down, we determine the
     // min, max, and increment angles of the laser in the base frame.
@@ -1254,6 +1262,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
               (i * angle_increment);
     }
 
+    // 激光数据 跟新权重
     lasers_[laser_index]->UpdateSensor(pf_, (AMCLSensorData*)&ldata);
 
     lasers_update_[laser_index] = false;
@@ -1263,6 +1272,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
     // Resample the particles
     if(!(++resample_count_ % resample_interval_))
     {
+      // ******* 重采样 ********
       pf_update_resample(pf_);
       resampled = true;
     }
@@ -1290,6 +1300,7 @@ AmclNode::laserReceived(const sensor_msgs::LaserScanConstPtr& laser_scan)
 
   if(resampled || force_publication)
   {
+    // 输出当前位姿估计
     // Read out the current hypotheses
     double max_weight = 0.0;
     int max_weight_hyp = -1;

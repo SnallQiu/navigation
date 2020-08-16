@@ -43,7 +43,7 @@
 
 namespace costmap_2d
 {
-
+// 这个类继承了2个最大的父类 Layer 和 Costmap2D
 class CostmapLayer : public Layer, public Costmap2D
 {
 public:

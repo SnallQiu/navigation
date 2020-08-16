@@ -37,7 +37,9 @@
 #ifndef COSTMAP_2D_LAYER_H_
 #define COSTMAP_2D_LAYER_H_
 
-#include <costmap_2d/costmap_2d.h>
+//include <costmap_2d/costmap_2d.h>
+//# 为啥这里相互include了一波，在layered_costmap.h里面也include了本文件。
+//# ????
 #include <costmap_2d/layered_costmap.h>
 #include <string>
 #include <tf/tf.h>
@@ -62,6 +64,7 @@ public:
    * For more details, see "Layered Costmaps for Context-Sensitive Navigation",
    * by Lu et. Al, IROS 2014.
    */
+  // updateBounds 和 updateCosts是最重要的2个接口。
   virtual void updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x, double* min_y,
                             double* max_x, double* max_y) {}
 

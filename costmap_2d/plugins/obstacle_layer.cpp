@@ -470,6 +470,7 @@ bool ObstacleLayer::getMarkingObservations(std::vector<Observation>& marking_obs
   for (unsigned int i = 0; i < marking_buffers_.size(); ++i)
   {
     marking_buffers_[i]->lock();
+    // 将一种观测值的所有buffer数据放到observations里面去
     marking_buffers_[i]->getObservations(marking_observations);
     current = marking_buffers_[i]->isCurrent() && current;
     marking_buffers_[i]->unlock();

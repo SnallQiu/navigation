@@ -322,6 +322,7 @@ void StaticLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       return;
     }
     // Copy map data given proper transformations
+    // 遍历的是 master_grid 的坐标i j
     for (unsigned int i = min_i; i < max_i; ++i)
     {
       for (unsigned int j = min_j; j < max_j; ++j)

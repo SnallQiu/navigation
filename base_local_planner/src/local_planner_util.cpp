@@ -102,6 +102,7 @@ bool LocalPlannerUtil::setPlan(const std::vector<geometry_msgs::PoseStamped>& or
   return true;
 }
 
+// DWAPlannerROS::computeVelocityCommands(geometry_msgs::Twist& cmd_vel)中，会先将全局路径映射到局部地图中 用的方法就是getLocalPlan
 bool LocalPlannerUtil::getLocalPlan(tf::Stamped<tf::Pose>& global_pose, std::vector<geometry_msgs::PoseStamped>& transformed_plan) {
   //get the global plan in our frame
   if(!base_local_planner::transformGlobalPlan(

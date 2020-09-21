@@ -144,7 +144,8 @@ namespace base_local_planner {
         tf_pose.stamp_ = plan_to_global_transform.stamp_;
         tf_pose.frame_id_ = global_frame;
         poseStampedTFToMsg(tf_pose, newer_pose);
-
+s
+	// 更新。
         transformed_plan.push_back(newer_pose);
 
         double x_diff = robot_pose.getOrigin().x() - global_plan[i].pose.position.x;
